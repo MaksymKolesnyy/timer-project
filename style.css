@@ -107,7 +107,7 @@ input:focus {
     box-shadow: var(--bxs1--md), var(--bxs2--md);
 }
 
-[type="submit"] svg4 {
+[type="submit"] svg {
     transform: scale(2);
     margin-right: 10px;
     pointer-events: none;
@@ -128,12 +128,22 @@ input:focus {
     grid-gap: 6rem;
     width: 100%;
     max-width: 800px;
-    margin: 6rem auto;
+    margin: 3rem auto;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, 50%);
+    opacity: 1;
+    pointer-events: all;
+    transition: var(--transitionall);
 }
+
+
+.event-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 .event {
     background-color: var(--light);
@@ -184,4 +194,25 @@ input:focus {
     font-size: 4rem;
 }
 
-.event_countdown {}
+.event_countdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-gap: 1.5rem;
+}
+
+.event-item {
+    padding: 1.2em 2em;
+    font-size: 1rem;
+    background-color: var(--light);
+    border: 2px solid transparent;
+    border-top: 2px solid var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--bxs1), var(--bxs2);
+    transition: var(--transitionall);
+    display: grid;
+    place-items: center;
+}
+
+.event_item--title {
+    font-size: 2rem;
+}
