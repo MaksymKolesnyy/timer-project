@@ -34,7 +34,7 @@ function removeHiddenClass(element) {
 // FUNCTION: STORAGE CHECK
 function checkLocalStorage() {
     const storedEvent = localStorage.getItem('eventTracker.event');
-    if (storedEvent === "" || storedEvent === null) {
+    if (!storedEvent) {
         showForm();
     } else {
         const event = JSON.parse(storedEvent);
@@ -42,50 +42,63 @@ function checkLocalStorage() {
     }
 }
 
-//FUNCTION: saveEventToLocalStorage
+// FUNCTION: SAVE EVENT TO LOCAL STORAGE
 function saveEventToLocalStorage(title, date) {
-    const event = {
-        title,
-        date,
-    };
+    const event = { title, date };
     localStorage.setItem('eventTracker.event', JSON.stringify(event));
 }
 
-
-//FUNCTION: deleteEventFromLocalStorage
-
-function deleteEventFormLocalStorage() {
-    localStorage.setItem('eventTracker.event', '[]');
+// FUNCTION: DELETE EVENT FROM LOCAL STORAGE
+function deleteEventFromLocalStorage() {
+    localStorage.removeItem('eventTracker.event');
 }
 
-
-//FUNCTION: START  COUNTDOWN-TIMER
+// FUNCTION: START COUNTDOWN TIMER
 function startCountdownTimer(title, date) {
     const eventTitle = document.querySelector('.event_title');
     eventTitle.textContent = title;
-    updateCountdown(date);
+
+    updateCountdown(date);  // Immediately update the countdown
+    countdownTimer = setInterval(() => {
+        updateCountdown(date);
+    }, 1000);
 }
 
-//FUNCTION: updateCountdown
-
+// FUNCTION: UPDATE COUNTDOWN
 function updateCountdown(date) {
     const currentTime = new Date().getTime();
     const countdownTime = date - currentTime;
 
-
-
     // Time math
     const newDay = Math.floor(countdownTime / day);
     const newHour = Math.floor((countdownTime % day) / hour);
-    const newMinute = Math.floor((countdownTime % hour / minute);
+    const newMinute = Math.floor((countdownTime % hour) / minute);
     const newSecond = Math.floor((countdownTime % minute) / second);
 
+    // Update Event
+    dayTitle.textContent = newDay;
+    hourTitle.textContent = newHour;
+    minuteTitle.textContent = newMinute;
+    secondTitle.textContent = newSecond;
+
+    // Update names
+    dayName.textContent = `day${newDay === 1 ? '' : 's'}`;
+    hourName.textContent = `hour${newHour === 1 ? '' : 's'}`;
+    minuteName.textContent = `minute${newMinute === 1 ? '' : 's'}`;
+    secondName.textContent = `second${newSecond === 1 ? '' : 's'}`;
+
+    // If the countdown is finished
+    if (countdownTime < 0) {
+        clearInterval(countdownTimer);
+        document.querySelector('.event_countdown').textContent = "Event has started!";
+    }
 }
+
 // FUNCTION: SHOW FORM
 function showForm() {
     removeHiddenClass(formContainer);
     addHiddenClass(eventContainer);
-    deleteEventFormLocalStorage();
+    deleteEventFromLocalStorage();
     const title = document.querySelector('#title');
     title.focus();
 }
@@ -96,40 +109,6 @@ function showEvent(title, date) {
     startCountdownTimer(title, date);
     removeHiddenClass(eventContainer);
     addHiddenClass(formContainer);
-}
-
-// FUNCTION: SAVE EVENT TO LOCAL STORAGE
-function saveEventToLocalStorage(title, date) {
-    const event = { title, date };
-    localStorage.setItem('eventTracker.event', JSON.stringify(event));
-}
-
-// FUNCTION: START COUNTDOWN TIMER
-function startCountdownTimer(title, date) {
-    const eventDate = new Date(date).getTime();
-
-    countdownTimer = setInterval(() => {
-        const now = new Date().getTime();
-        const distance = eventDate - now;
-
-        // Calculate Time
-        const days = Math.floor(distance / day);
-        const hours = Math.floor((distance % day) / hour);
-        const minutes = Math.floor((distance % hour) / minute);
-        const seconds = Math.floor((distance % minute) / second);
-
-        // Update UI
-        dayTitle.textContent = days;
-        hourTitle.textContent = hours;
-        minuteTitle.textContent = minutes;
-        secondTitle.textContent = seconds;
-
-        // If event date is reached, stop countdown
-        if (distance < 0) {
-            clearInterval(countdownTimer);
-            document.querySelector('.event_countdown').textContent = "Event has started!";
-        }
-    }, 1000);
 }
 
 // EVENT: SUBMIT FORM
@@ -144,16 +123,16 @@ form.addEventListener('submit', (e) => {
         return alert('Please enter a title and a date');
     }
 
-    showEvent(title.value, date);
-    title.value = '';
-    eventInput.value = '';
+    const date = new Date(eventInput).getTime();
+    showEvent(title, date);
 
+    // Reset form
+    form.reset();
 });
 
-//EVENT: DELATE BTN
-const eventBtn = document.querySelector('.event-btn').addEventListener('click',
-    showForm
-)
+// EVENT: DELETE BUTTON
+const eventBtn = document.querySelector('.event-btn');
+eventBtn.addEventListener('click', showForm);
 
-//EVENT: WINDOW LOAD
+// EVENT: WINDOW LOAD
 window.addEventListener('DOMContentLoaded', checkLocalStorage);
