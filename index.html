@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>timer-project</title>
+    <meta name="description" content="Timer project for event countdown">
+    <title>Timer Project</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,7 +19,7 @@
             <label for="event">
                 <input type="datetime-local" id="event">
             </label>
-            <button type="submit" value="Add new Countdown">
+            <button type="submit">
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                         d="M4.75 8.75C4.75 7.64543 5.64543 6.75 6.75 6.75H17.25C18.3546 6.75 19.25 7.64543 19.25 8.75V17.25C19.25 18.3546 18.3546 19.25 17.25 19.25H6.75C5.64543 19.25 4.75 18.3546 4.75 17.25V8.75Z">
@@ -37,7 +38,7 @@
 
     <div class="event-container hidden">
         <div class="event">
-            <button class="event-btn">
+            <button class="event-btn" type="button" aria-label="Delete Event">
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                         d="M6.75 7.75L7.59115 17.4233C7.68102 18.4568 8.54622 19.25 9.58363 19.25H14.4164C15.4538 19.25 16.319 18.4568 16.4088 17.4233L17.25 7.75">
@@ -64,8 +65,8 @@
                     <p id="minute_name">MINUTES</p>
                 </div>
                 <div class="event-item">
-                    <p class="event_item--title" id="seconds_title">15</p>
-                    <p id="seconds_name">SECONDS</p>
+                    <p class="event_item--title" id="second_title">15</p>
+                    <p id="second_name">SECONDS</p>
                 </div>
             </div>
         </div>
