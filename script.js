@@ -21,6 +21,11 @@ const day = hour * 24;
 // Countdown Timer Variable
 let countdownTimer;
 
+// Function to convert a date to local time based on the PC's timezone
+function toLocalTime(date) {
+    return new Date(date.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+}
+
 // FUNCTION: ADD HIDDEN CLASS
 function addHiddenClass(element) {
     element.classList.add('hidden');
@@ -53,18 +58,20 @@ function deleteEventFromLocalStorage() {
     localStorage.removeItem('eventTracker.event');
 }
 
-// FUNCTION: START COUNTDOWN TIMER
+// FUNCTION: START COUNTDOWN TIMER considering local timezone
 function startCountdownTimer(title, date) {
     const eventTitle = document.querySelector('.event_title');
     eventTitle.textContent = title;
 
-    updateCountdown(date);  // Immediately update the countdown
+    const localEventDate = toLocalTime(new Date(date));
+
+    updateCountdown(localEventDate.getTime());  // Immediately update the countdown
     countdownTimer = setInterval(() => {
-        updateCountdown(date);
+        updateCountdown(localEventDate.getTime());
     }, 1000);
 }
 
-// FUNCTION: UPDATE COUNTDOWN
+// FUNCTION: UPDATE COUNTDOWN considering local timezone
 function updateCountdown(date) {
     const currentTime = new Date().getTime();
     const countdownTime = date - currentTime;
@@ -88,9 +95,10 @@ function updateCountdown(date) {
     secondName.textContent = `second${newSecond === 1 ? '' : 's'}`;
 
     // If the countdown is finished
-    if (countdownTime < 0) {
+    if (countdownTime <= 0) {
         clearInterval(countdownTimer);
         document.querySelector('.event_countdown').textContent = "Event has started!";
+
     }
 }
 
@@ -124,6 +132,11 @@ form.addEventListener('submit', (e) => {
     }
 
     const date = new Date(eventInput).getTime();
+
+    if (isNaN(date)) {
+        return alert('Invalid date. Please enter a valid date.');
+    }
+
     showEvent(title, date);
 
     // Reset form
